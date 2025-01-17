@@ -1,25 +1,41 @@
 import { useAuth } from '../context/AuthContext'
-import { supabase } from '../lib/supabase'
+import { 
+  Typography, 
+  Paper, 
+  Container
+} from '@mui/material'
+import { DashboardLayout } from '../components/DashboardLayout'
 
 export function Dashboard() {
   const { user } = useAuth()
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-  }
-
   return (
-    <div className="dashboard">
-      <div className="dashboard-header">
-        <h1>Dashboard</h1>
-        <button onClick={handleSignOut} className="sign-out-btn">
-          Sign Out
-        </button>
-      </div>
-      <div className="dashboard-content">
-        <p>Welcome, {user.email}!</p>
-        <p>You're signed in and ready to go.</p>
-      </div>
-    </div>
+    <DashboardLayout>
+      <Container maxWidth="lg">
+        <Paper
+          sx={{
+            p: 4,
+            borderRadius: 2
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{ fontWeight: 600 }}
+          >
+            Dashboard
+          </Typography>
+          
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            Welcome, {user.email}!
+          </Typography>
+          
+          <Typography variant="body1">
+            You're signed in and ready to go.
+          </Typography>
+        </Paper>
+      </Container>
+    </DashboardLayout>
   )
 } 

@@ -1,6 +1,15 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { 
+  Box, 
+  Paper, 
+  Typography, 
+  TextField, 
+  Button, 
+  Divider,
+  Link as MuiLink
+} from '@mui/material'
 
 export function SignUp() {
   const [email, setEmail] = useState('')
@@ -16,18 +25,12 @@ export function SignUp() {
       
       const { error } = await supabase.auth.signUp({
         email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-          data: {
-            created_at: new Date().toISOString(),
-          }
-        }
+        password
       })
 
       if (error) throw error
       
-      setMessage('Success! Please check your email to confirm your account.')
+      setMessage('Check your email for the confirmation link!')
     } catch (error) {
       setMessage('Error: ' + error.message)
     } finally {
@@ -36,34 +39,99 @@ export function SignUp() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h1>Sign Up</h1>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 'calc(100vh - 64px)', // Subtract header height
+        backgroundColor: 'background.default',
+        padding: 3
+      }}
+    >
+      <Paper
+        elevation={2}
+        sx={{
+          p: 4,
+          width: '100%',
+          maxWidth: 400,
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="h1"
+          align="center"
+          gutterBottom
+          sx={{ mb: 3, fontWeight: 600 }}
+        >
+          Create your account
+        </Typography>
+
         <form onSubmit={handleSignUp}>
-          <input
+          <TextField
+            fullWidth
             type="email"
-            placeholder="Your email"
+            label="Email address"
+            variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            sx={{ mb: 2 }}
           />
-          <input
+          
+          <TextField
+            fullWidth
             type="password"
-            placeholder="Choose a password"
+            label="Password"
+            variant="outlined"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
             required
+            sx={{ mb: 3 }}
           />
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Creating account...' : 'Create Account'}
-          </button>
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={isLoading}
+            sx={{ mb: 2 }}
+          >
+            {isLoading ? 'Creating account...' : 'Sign up'}
+          </Button>
+
+          {message && (
+            <Typography 
+              color={message.startsWith('Error') ? 'error' : 'success.main'}
+              variant="body2" 
+              align="center" 
+              sx={{ mb: 2 }}
+            >
+              {message}
+            </Typography>
+          )}
+
+          <Divider sx={{ my: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              OR
+            </Typography>
+          </Divider>
+
+          <Typography align="center" variant="body2">
+            Already have an account?{' '}
+            <MuiLink
+              component={Link}
+              to="/signin"
+              sx={{
+                textDecoration: 'none',
+                fontWeight: 500
+              }}
+            >
+              Sign in
+            </MuiLink>
+          </Typography>
         </form>
-        {message && <p className="message">{message}</p>}
-        <p className="auth-link">
-          Already have an account? <Link to="/signin">Sign In</Link>
-        </p>
-      </div>
-    </div>
+      </Paper>
+    </Box>
   )
 } 

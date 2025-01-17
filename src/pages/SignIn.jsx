@@ -1,6 +1,15 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { 
+  Box, 
+  Paper, 
+  Typography, 
+  TextField, 
+  Button, 
+  Divider,
+  Link as MuiLink
+} from '@mui/material'
 
 export function SignIn() {
   const [email, setEmail] = useState('')
@@ -31,33 +40,99 @@ export function SignIn() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h1>Sign In</h1>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 'calc(100vh - 64px)', // Subtract header height
+        backgroundColor: 'background.default',
+        padding: 3
+      }}
+    >
+      <Paper
+        elevation={2}
+        sx={{
+          p: 4,
+          width: '100%',
+          maxWidth: 400,
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="h1"
+          align="center"
+          gutterBottom
+          sx={{ mb: 3, fontWeight: 600 }}
+        >
+          Sign in to your account
+        </Typography>
+
         <form onSubmit={handleSignIn}>
-          <input
+          <TextField
+            fullWidth
             type="email"
-            placeholder="Your email"
+            label="Email address"
+            variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            sx={{ mb: 2 }}
           />
-          <input
+          
+          <TextField
+            fullWidth
             type="password"
-            placeholder="Your password"
+            label="Password"
+            variant="outlined"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            sx={{ mb: 3 }}
           />
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
-          </button>
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={isLoading}
+            sx={{ mb: 2 }}
+          >
+            {isLoading ? 'Signing in...' : 'Sign in'}
+          </Button>
+
+          {message && (
+            <Typography 
+              color="error" 
+              variant="body2" 
+              align="center" 
+              sx={{ mb: 2 }}
+            >
+              {message}
+            </Typography>
+          )}
+
+          <Divider sx={{ my: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              OR
+            </Typography>
+          </Divider>
+
+          <Typography align="center" variant="body2">
+            Don't have an account?{' '}
+            <MuiLink
+              component={Link}
+              to="/signup"
+              sx={{
+                textDecoration: 'none',
+                fontWeight: 500
+              }}
+            >
+              Sign up
+            </MuiLink>
+          </Typography>
         </form>
-        {message && <p className="message">{message}</p>}
-        <p className="auth-link">
-          Don't have an account? <Link to="/signup">Sign Up</Link>
-        </p>
-      </div>
-    </div>
+      </Paper>
+    </Box>
   )
 } 
